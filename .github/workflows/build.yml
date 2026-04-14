@@ -7,33 +7,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Java
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
           java-version: '17'
+          distribution: 'temurin'
 
-      - name: Setup Flutter
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.0'
 
-      - name: Accept Android Licenses
-        run: yes | sdkmanager --licenses || true
+      - name: Install Android SDK
+        run: |
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Install Flet
-        run: pip install flet
-
-      - name: Build APK
-        run: flet build apk
-        
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: FreshMarketApp
-          path: build/apk/*.apk
+      - name: Build
+        run: |
+          pip install flet
+          flet build apk --verbose
