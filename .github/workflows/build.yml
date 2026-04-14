@@ -18,6 +18,9 @@ jobs:
         with:
           flutter-version: '3.19.0'
 
+      - name: Accept Android Licenses
+        run: yes | sdkmanager --licenses || true
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
