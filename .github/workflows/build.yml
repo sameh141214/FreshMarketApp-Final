@@ -7,28 +7,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.19.0'
-
-      - name: Install Android SDK
-        run: |
-          yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
-
-      - name: Set up Python
+      - name: Install Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Build
+      - name: Install Flet and Dependencies
         run: |
           pip install flet
-          flet build apk --verbose
+          # تثبيت أدوات أندرويد اللازمة يدوياً لضمان عدم وجود نقص
+          pip install flet[all] 
+
+      - name: Build APK
+        run: |
+          # الأمر ده هو اللي بيقوم بالليلة كلها وبيوافق على الرخص لوحده
+          flet build apk --no-interactive
+        
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FreshMarketApp
+          path: build/apk/*.apk
